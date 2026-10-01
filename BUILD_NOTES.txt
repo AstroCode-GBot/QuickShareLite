@@ -1,0 +1,17 @@
+Build / validation status
+=========================
+
+Milestone Zero source foundation is present and uses real Google Nearby Connections APIs, not simulated discovery or transfers.
+
+This container has Java/Kotlin installed but does not have an Android SDK, Android Studio toolchain, or Gradle executable available. The project therefore could not be assembled or run against physical Android devices here.
+
+Before declaring the app functional, open it in Android Studio, sync, build, install on two physical Android devices, then validate: discovery -> authenticated connection -> one real selected file -> receiver Accept -> real transfer -> received-file checksum verification.
+
+Known next-phase work (intentionally not faked):
+- Multi-file queue and per-file states
+- Background transfer orchestration through the declared foreground service
+- QR display/scanner with expiring session data
+- Full History Details screen and richer metadata
+- Production Play Billing verification / entitlement hardening
+- Production privacy policy / store metadata
+- More complete resource localization and Android-version matrix testing
