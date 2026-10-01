@@ -20,22 +20,24 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Make gradlew executable
-        run: chmod +x gradlew
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
 
-      - name: Download Gradle
-  run: ./gradlew --version || true
+      - name: Download Gradle distribution
+        run: |
+          GRADLE_VERSION=$(grep distributionUrl gradle/wrapper/gradle-wrapper.properties | sed 's/.*gradle-\([0-9.]*\)-bin.zip.*/\1/')
+          mkdir -p "$HOME/gradle-dist"
+          curl -L "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" -o "$HOME/gradle-dist/gradle.zip"
+          unzip -q "$HOME/gradle-dist/gradle.zip" -d "$HOME/gradle-dist"
+          chmod +x "$HOME/gradle-dist/gradle-${GRADLE_VERSION}/bin/gradle"
 
-- name: Fix Gradle permissions
-  run: find "$HOME/.gradle/wrapper/dists" -type f -path "*/bin/gradle" -exec chmod +x {} \;
-
-- name: Build Debug APK
-  run: ./gradlew assembleDebug --stacktrace
+      - name: Build Debug APK
+        run: |
+          GRADLE_VERSION=$(grep distributionUrl gradle/wrapper/gradle-wrapper.properties | sed 's/.*gradle-\([0-9.]*\)-bin.zip.*/\1/')
+          "$HOME/gradle-dist/gradle-${GRADLE_VERSION}/bin/gradle" assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: QuickShareLite-debug
           path: app/build/outputs/apk/debug/*.apk
-
-
